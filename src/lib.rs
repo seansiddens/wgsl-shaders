@@ -1,3 +1,5 @@
+// To build WASM:
+// $ wasm-pack build --target web
 use std::iter;
 
 use winit::{
@@ -17,6 +19,10 @@ struct State {
     size: winit::dpi::PhysicalSize<u32>,
     render_pipeline: wgpu::RenderPipeline,
 }
+
+// Configure shaders.
+static VERTEX_SOURCE: &str = include_str!("shaders/vertex.wgsl");
+static FRAG_SOURCE: &str = include_str!("shaders/example.wgsl");
 
 impl State {
     async fn new(window: &Window) -> Self {
@@ -62,9 +68,14 @@ impl State {
         };
         surface.configure(&device, &config);
 
-        let shader = device.create_shader_module(wgpu::ShaderModuleDescriptor {
-            label: Some("Shader"),
-            source: wgpu::ShaderSource::Wgsl(include_str!("shaders/fullscreen_quad.wgsl").into()),
+        let vertex_shader = device.create_shader_module(wgpu::ShaderModuleDescriptor {
+            label: Some("Vertex Shader Module"),
+            source: wgpu::ShaderSource::Wgsl(VERTEX_SOURCE.into()),
+        });
+
+        let fragment_shader = device.create_shader_module(wgpu::ShaderModuleDescriptor {
+            label: Some("Fragment Shader Module"),
+            source: wgpu::ShaderSource::Wgsl(FRAG_SOURCE.into()),
         });
 
         let render_pipeline_layout =
@@ -78,12 +89,12 @@ impl State {
             label: Some("Render Pipeline"),
             layout: Some(&render_pipeline_layout),
             vertex: wgpu::VertexState {
-                module: &shader,
+                module: &vertex_shader,
                 entry_point: "vs_main",
                 buffers: &[],
             },
             fragment: Some(wgpu::FragmentState {
-                module: &shader,
+                module: &fragment_shader,
                 entry_point: "fs_main",
                 targets: &[Some(wgpu::ColorTargetState {
                     format: config.format,
