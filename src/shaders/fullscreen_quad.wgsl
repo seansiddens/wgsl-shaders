@@ -20,7 +20,7 @@ fn vs_main(
 // Fragment shader
 @fragment
 fn fs_main(in: VertexOutput) -> @location(0) vec4<f32> {
-    var col = vec3<f32>(in.uv.x);
+    var col = vec3<f32>(in.uv.x, 0.0, 0.0);
     return vec4<f32>(col, 1.0);
 }
 
