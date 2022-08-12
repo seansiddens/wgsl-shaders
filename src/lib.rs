@@ -1,13 +1,12 @@
-// To build WASM:
-// $ wasm-pack build --target web
 use std::iter;
-
 use winit::{
     event::*,
     event_loop::{ControlFlow, EventLoop},
     window::{Window, WindowBuilder},
 };
 
+// To build WASM:
+// $ wasm-pack build --target web
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::*;
 
@@ -68,6 +67,7 @@ impl State {
         };
         surface.configure(&device, &config);
 
+        // Graphics pipeline.
         let vertex_shader = device.create_shader_module(wgpu::ShaderModuleDescriptor {
             label: Some("Vertex Shader Module"),
             source: wgpu::ShaderSource::Wgsl(VERTEX_SOURCE.into()),
