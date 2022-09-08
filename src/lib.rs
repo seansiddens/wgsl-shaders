@@ -39,6 +39,9 @@ impl State {
             })
             .await
             .unwrap();
+        let adapter_info = adapter.get_info();
+        println!("Adapter Info: ");
+        println!("{:#?}", adapter_info);
 
         let (device, queue) = adapter
             .request_device(
