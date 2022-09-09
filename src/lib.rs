@@ -21,7 +21,7 @@ struct State {
 
 // Configure shaders.
 static VERTEX_SOURCE: &str = include_str!("shaders/vertex.wgsl");
-static FRAG_SOURCE: &str = include_str!("shaders/example.wgsl");
+static FRAG_SOURCE: &str = include_str!("shaders/random.wgsl");
 
 impl State {
     async fn new(window: &Window) -> Self {
