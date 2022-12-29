@@ -27,10 +27,12 @@ impl State {
     async fn new(window: &Window) -> Self {
         let size = window.inner_size();
 
-        // The instance is a handle to our GPU
+        // Create instance and surface
         // BackendBit::PRIMARY => Vulkan + Metal + DX12 + Browser WebGPU
         let instance = wgpu::Instance::new(wgpu::Backends::all());
         let surface = unsafe { instance.create_surface(window) };
+
+        // Create physical device
         let adapter = instance
             .request_adapter(&wgpu::RequestAdapterOptions {
                 power_preference: wgpu::PowerPreference::default(),
@@ -40,9 +42,9 @@ impl State {
             .await
             .unwrap();
         let adapter_info = adapter.get_info();
-        println!("Adapter Info: ");
         println!("{:#?}", adapter_info);
 
+        // Get logical device and queue
         let (device, queue) = adapter
             .request_device(
                 &wgpu::DeviceDescriptor {
@@ -53,6 +55,7 @@ impl State {
                     limits: if cfg!(target_arch = "wasm32") {
                         wgpu::Limits::downlevel_webgl2_defaults()
                     } else {
+                        println!("Using default wgpu limits.");
                         wgpu::Limits::default()
                     },
                 },
@@ -67,6 +70,7 @@ impl State {
             width: size.width,
             height: size.height,
             present_mode: wgpu::PresentMode::Fifo,
+            alpha_mode: wgpu::CompositeAlphaMode::Auto,
         };
         surface.configure(&device, &config);
 
